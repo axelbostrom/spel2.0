@@ -16,6 +16,7 @@ public class Main extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
 	Asteroid a1;
 	Asteroid a2;
+	Asteroid a3;
 	Earth earth;
 	private boolean running;
 
@@ -32,21 +33,23 @@ public class Main extends Canvas implements Runnable {
 	}
 
 	public Main() {
-		Dimension d = new Dimension(800, 600);
+		Dimension d = new Dimension(1200, 900);
 		setPreferredSize(d);
 		setMinimumSize(d);
 		setMaximumSize(d);
 		
-		double earthX = 500;
-		double earthY = 100;
-		double G = 1;
-		double earthMass = 100;
+		double earthX = 600;
+		double earthY = 450;
+		double G = 10;
+		double earthMass = 5000;
 		
-		double a1mass = 5;
-		double a2mass = 5;
+		double a1mass = 50;
+		double a2mass = 10;
+		double a3mass = 100;
 
 		a1 = new Asteroid(60, 60, earthX, earthY, a1mass, earthMass, G);
-		a2 = new Asteroid(300, 30, earthX, earthY, a2mass, earthMass, G);
+		a2 = new Asteroid(800, 800, earthX, earthY, a2mass, earthMass, G);
+		a3 = new Asteroid(300, 300, earthX, earthY, a3mass, earthMass, G);
 		earth = new Earth(earthX, earthY, earthMass, G);
 
 	}
@@ -87,6 +90,7 @@ public class Main extends Canvas implements Runnable {
 		earth.render(g);
 		a1.render(g);
 		a2.render(g);
+		a3.render(g);
 		strategy.show();
 
 	}
@@ -94,6 +98,7 @@ public class Main extends Canvas implements Runnable {
 	private void update() {
 		a1.update();
 		a2.update();
+		a3.update();
 	}
 
 }

@@ -11,8 +11,8 @@ public class Asteroid {
 	double Amass;
 	double G;
 	double Emass;
-	double mx = 0;
-	double my = 0;
+	double mx = 2;
+	double my;
 
 	double diffX, diffY, distance, force, normX, normY, fX, fY, accX, accY;
 
@@ -116,13 +116,20 @@ public class Asteroid {
 
 		// distansen mellan partiklarna i x-led
 
-		diffX = x - ex;
+		diffX = ex - x;
 
 		// distansen mellan partiklarna i y-led
-		diffY = y - ey;
+		diffY = ey - y;
 
+		// int constrain(int val, int minv, int maxv) {
+		// return min(max(val, minv), maxv);
+		// d = constrain(d,5.0,25.0);
 		distance = Math.sqrt((diffX) * (diffX) + (diffY) * (diffY));
+		System.out.println("distance is " + distance);
+		// distance = Math.min((Math.max(distance, 5)), 100);
+		// System.out.println("distance1 is " + distance);
 		force = (G * Emass * Amass) / (distance * distance);
+		System.out.println("force is " + force);
 
 		// normalizering
 		normX = diffX / distance;
@@ -132,14 +139,17 @@ public class Asteroid {
 		fX = normX * force;
 		fY = normY * force;
 
-		// avgör acceleration
+		// avgör acceleration a=F/M
 		accX = fX / getAmass();
 		accY = fY / getAmass();
 
-		// På något sätt råkade jag räkna accelrationen baklänges så jag får subtrahera
-		// den med den nuvarande hastigheten
-		mx = mx - accX;
-		my = my - accY;
+		System.out.println("mx is " + mx);
+		System.out.println("my is " + my);
+		System.out.println("getMx is " + getMx());
+		System.out.println("getMy is " + getMy());
+
+		mx = mx + accX;
+		my = my + accY;
 
 	}
 
