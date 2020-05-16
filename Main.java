@@ -4,7 +4,9 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.List;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -14,10 +16,7 @@ public class Main extends Canvas implements Runnable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Asteroid a1;
-	Asteroid a2;
-	Asteroid a3;
-	Earth earth;
+	private static ArrayList<Particle> particles = new ArrayList<>();
 	private boolean running;
 
 	public static void main(String[] args) {
@@ -37,20 +36,8 @@ public class Main extends Canvas implements Runnable {
 		setPreferredSize(d);
 		setMinimumSize(d);
 		setMaximumSize(d);
-		
-		double earthX = 600;
-		double earthY = 450;
-		double G = 10;
-		double earthMass = 5000;
-		
-		double a1mass = 50;
-		double a2mass = 10;
-		double a3mass = 100;
 
-		a1 = new Asteroid(60, 60, earthX, earthY, a1mass, earthMass, G);
-		a2 = new Asteroid(800, 800, earthX, earthY, a2mass, earthMass, G);
-		a3 = new Asteroid(300, 300, earthX, earthY, a3mass, earthMass, G);
-		earth = new Earth(earthX, earthY, earthMass, G);
+		makeParticles();
 
 	}
 
@@ -69,14 +56,25 @@ public class Main extends Canvas implements Runnable {
 		}
 
 	}
-	
+
 	public void start() {
-		if(!running) {
+		if (!running) {
 			Thread t = new Thread(this);
 			createBufferStrategy(3);
 			running = true;
 			t.start();
 		}
+	}
+
+	public void makeParticles() {
+		Particle earth = new Particle(600, 450, 0, 0, 1000000, 20, 10, Color.blue, 0);
+		Particle a1 = new Particle(60, 60, 2, 1, 50, 5, 0.01, Color.gray, 1);
+		Particle a2 = new Particle(900, 900, -2, -1, 25, 4, 0.01, Color.green, 2);
+		Particle a3 = new Particle(60, 800, 3, 1, 10, 4, 0.01, Color.blue, 3);
+		particles.add(earth);
+		particles.add(a1);
+		particles.add(a2);
+		particles.add(a3);
 	}
 
 	private void render() {
@@ -87,18 +85,86 @@ public class Main extends Canvas implements Runnable {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, getWidth(), getHeight());
 
-		earth.render(g);
-		a1.render(g);
-		a2.render(g);
-		a3.render(g);
+		for (Particle p : particles) {
+			p.render(g);
+		}
 		strategy.show();
 
 	}
 
 	private void update() {
-		a1.update();
-		a2.update();
-		a3.update();
+		for (Particle p : particles) {
+			for (Particle p1 : particles) {
+				//System.out.println("px before loop" + p.getMass());
+				upmove(p, p1);
+				move(p);
+			}
+		}
+	}
+
+	public void upmove(Particle p, Particle p1) {
+
+		if (p.getId() == 0) { //kollar så att det inte är jorden som kollar mot andra asteroider
+			p.setMx(0);
+			p.setMy(0);
+
+		} else {
+
+			double diffX, diffY, distance, force, normX, normY, fX, fY, accX, accY;
+
+			// distansen mellan partiklarna i x-led
+
+			// System.out.println("getx is " + p.getX());
+			diffX = p.getX() - p1.getX();
+
+			// distansen mellan partiklarna i y-led
+			diffY = p.getY() - p1.getY();
+
+			// int constrain(int val, int minv, int maxv) {
+			// return min(max(val, minv), maxv);
+			// d = constrain(d,5.0,25.0);
+
+			if (!(diffX == 0)) {
+				distance = Math.sqrt((diffX) * (diffX) + (diffY) * (diffY));
+				// distance = Math.min((Math.max(distance, 5)), 100);
+				// System.out.println("distance1 is " + distance);
+				force = (p.getG() * p.getMass() * p1.getMass()) / (distance * distance);
+
+				// normalizering
+				normX = diffX / distance;
+				normY = diffY / distance;
+
+				// kraft uppdelning
+				fX = normX * force;
+				fY = normY * force;
+
+				// avgör acceleration a=F/M
+				accX = fX / p.getMass();
+				accY = fY / p.getMass();
+
+			} else {
+				accX = 0;
+				accY = 0;
+			}
+
+			// System.out.println("acc X is " + accX);
+
+			p.setMx(p.getMx() - accX);
+			// System.out.println("mx is " + p.getMx());
+			p.setMy(p.getMy() - accY);
+			// System.out.println("my is " + p.getMy());
+		}
+
+	}
+
+	public void move(Particle p) {
+		p.setX(p.getX() + p.getMx());
+		p.setY(p.getY() + p.getMy());
+	}
+	
+	public boolean checkCollision(Particle p, Particle p1) {
+		// behöver fixas
+		return true;
 	}
 
 }
