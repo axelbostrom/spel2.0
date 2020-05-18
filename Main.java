@@ -18,6 +18,7 @@ public class Main extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
 	private static ArrayList<Particle> particles = new ArrayList<>();
 	private boolean running;
+	// private double G = 6.674*Math.pow(10, -11);
 	private double G = 10;
 
 	public static void main(String[] args) {
@@ -37,7 +38,6 @@ public class Main extends Canvas implements Runnable {
 		setPreferredSize(d);
 		setMinimumSize(d);
 		setMaximumSize(d);
-
 		makeParticles();
 
 	}
@@ -69,9 +69,9 @@ public class Main extends Canvas implements Runnable {
 
 	public void makeParticles() {
 		double emass = 50;
-		double smass = 100.989;
+		double smass = 100;
 
-		//Particle s1 = new Particle(600, 450, 0, 0, smass, 30, Color.yellow, 0);
+		// Particle s1 = new Particle(600, 450, 0, 0, smass, 30, Color.yellow, 0);
 		Particle e1 = new Particle(0, 450, 1, 0, emass, 10, Color.blue, 1);
 		Particle e2 = new Particle(1200, 450, -1, 0, emass, 10, Color.blue, 1);
 
@@ -97,6 +97,9 @@ public class Main extends Canvas implements Runnable {
 	private void update() {
 		for (Particle p : particles) {
 			for (Particle p1 : particles) {
+				if ((p.getId() == 2) || (p1.getId() == 2) ) {
+					break;
+				}
 				upmove(p, p1);
 				move(p);
 			}
@@ -168,18 +171,46 @@ public class Main extends Canvas implements Runnable {
 		p.setY(p.getY() + p.getMy());
 	}
 
-	public void collision(Particle p, Particle p1) {
+//	public void collision(Particle p, Particle p1) {
+//
+//		double velocityf1x = (((p.getMass() - p1.getMass()) / (p.getMass() + p1.getMass())) * p.getMx())
+//				+ ((2 * p1.getMass()) / (p.getMass() + p1.getMass())) * p1.getMx();
+//		double velocityf1y = (((p.getMass() - p1.getMass()) / (p.getMass() + p1.getMass())) * p.getMy())
+//				+ ((2 * p1.getMass()) / (p.getMass() + p1.getMass())) * p1.getMy();
+//
+//		double velocityf2x = (((p1.getMass() - p.getMass()) / (p1.getMass() + p.getMass())) * p.getMx())
+//				+ ((2 * p.getMass()) / (p1.getMass() + p.getMass())) * p1.getMx();
+//		double velocityf2y = (((p1.getMass() - p.getMass()) / (p1.getMass() + p.getMass())) * p.getMy())
+//				+ ((2 * p.getMass()) / (p1.getMass() + p.getMass())) * p1.getMy();
+//
+//		p.setMx(velocityf1x);
+//		p.setMy(velocityf1y);
+//		p1.setMx(-velocityf2x);
+//		p1.setMy(velocityf2y);
+//	}
 
-		double velocityf1x = (((p.getMass()-p1.getMass())/(p.getMass()+p1.getMass()))*p.getMx()) + ((2*p1.getMass())/(p.getMass()+p1.getMass())) * p1.getMx();
-		double velocityf1y = (((p.getMass()-p1.getMass())/(p.getMass()+p1.getMass()))*p.getMy()) + ((2*p1.getMass())/(p.getMass()+p1.getMass())) * p1.getMy();
+	public void collision(Particle p, Particle p1) {
+		double vx,vy;
 		
-		double velocityf2x = (((p1.getMass()-p.getMass())/(p1.getMass()+p.getMass()))*p.getMx()) + ((2*p.getMass())/(p1.getMass()+p.getMass())) * p1.getMx();
-		double velocityf2y = (((p1.getMass()-p.getMass())/(p1.getMass()+p.getMass()))*p.getMy()) + ((2*p.getMass())/(p1.getMass()+p.getMass())) * p1.getMy();
+		System.out.println("hejhej");
+		System.out.println("px is " + p.getMx());
+		System.out.println("p1x is " + p1.getMx());
 		
-		p.setMx(velocityf1x);
-		p.setMy(velocityf1y);
-		p1.setMx(velocityf2x);
-		p1.setMy(velocityf2y);
+		vx = (p.getMass()*p.getMx() + p1.getMass()*p1.getMx()) / (p.getMass() + p1.getMass());
+		System.out.println("vx is " + vx);
+		vy = (p.getMass()*p.getMy() + p1.getMass()*p1.getMy()) / (p.getMass() + p1.getMass());
+		System.out.println("vy is " + vy);
+		
+		p.setMass(p.getMass() + p1.getMass());
+		p.setDiamater(p.getDiamater() * 1.5);
+		p.setMx(vx);
+		p.setMy(vy);
+		
+		p1.setDiamater(0);
+		p1.setMass(0);
+		p1.setMx(0);
+		p1.setMy(0);
+		p1.setId(2);
 	}
 
 }
