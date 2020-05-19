@@ -4,25 +4,25 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class Particle {
+	private double diamater;
 	private double x, y;
 	private double mx, my;
 	private double mass;
-	private double diamater;
 	private Color color;
 	private int id;
 
 	public Particle(double x, double y, double mx, double my, double mass, double diamater, Color color, int id) {
 		super();
+		this.diamater = diamater;
 		this.x = x;
 		this.y = y;
 		this.mx = mx;
 		this.my = my;
 		this.mass = mass;
-		this.diamater = diamater;
 		this.color = color;
 		this.id = id;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -53,7 +53,6 @@ public class Particle {
 
 	public void setMx(double mx) {
 		this.mx = mx;
-		// System.out.println("mx is " + mx);
 	}
 
 	public double getMy() {
@@ -62,7 +61,6 @@ public class Particle {
 
 	public void setMy(double my) {
 		this.my = my;
-		// System.out.println("my is " + my);
 	}
 
 	public double getMass() {
@@ -87,7 +85,6 @@ public class Particle {
 
 	public void render(Graphics2D g) {
 		g.setColor(color);
-		g.fillOval((int) x, (int) y, (int) diamater, (int) diamater);
-
+		g.fillOval((int) (x - (getDiamater() / 2)), (int) (y - (getDiamater() / 2)), (int) diamater, (int) diamater);
 	}
 }
